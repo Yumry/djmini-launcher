@@ -1,8 +1,8 @@
 import pyglet
 import random
 from . import util
-from . import uiobject
-class UiShiftedRow(uiobject.UIObject):
+from . import ui_object
+class UiShiftedRow(ui_object.UIObject):
     def __init__(self, position, random_color, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pos = position
