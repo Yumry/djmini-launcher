@@ -1,14 +1,14 @@
-screen_width = 0
-screen_height = 0
-
+from . import config
 # our scaling factor for image sizes, animation speed, etc
-scale_factor = 1
 
 # How much scaling we apply to each UI element independent of
 # our main scale factor. Affects the size of objects on-screen
 # across all resolutions.
-ui_scale = 0.4
 
+SCREEN_WIDTH = config.get_config()['resolution_x']
+SCREEN_HEIGHT = config.get_config()['resolution_y']
+
+SCALE_FACTOR = (SCREEN_WIDTH / 1024) * config.get_config()['ui_scaling']
 
 def center_image(image):
     # Set image anchor point to its center
@@ -16,22 +16,13 @@ def center_image(image):
     image.anchor_y = image.height / 2
 
 
-def set_resolution(width, height):
-    global screen_width
-    global screen_height
-    global scale_factor
-    screen_width = width
-    screen_height = height
-    scale_factor = screen_width / 1024
-
-
 # To allow us to position things the same on every resolution,
 # we use a sort of "virtual" pixel resolution of 1024x768.
 # These functions take an input value based on the virtual
 # resolution and convert it to the
 def scale_x(x):
-    return x * (screen_width / 1024)
+    return x * (SCREEN_WIDTH / 1024)
 
 
 def scale_y(y):
-    return y * (screen_height / 768)
+    return y * (SCREEN_HEIGHT / 768)

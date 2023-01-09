@@ -1,0 +1,12 @@
+# The path to your mame executable (including the executable)
+mame_directory: /home/yumry/mame/mame
+mame_args: -output network
+
+roms_directory: /home/yumry/mame/roms/
+
+resolution_x: 1680
+resolution_y: 1050
+
+# Scaling factor for the interface. Accepts values between
+# 0 and 1.
+ui_scaling: 0.4

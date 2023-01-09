@@ -3,17 +3,17 @@ from pyglet.window import key
 import bmlauncher.util as util
 import bmlauncher.ui_scrollable_row as ui_scrollable_row
 import bmlauncher.ui_element as ui_element
+import bmlauncher.config as config
 
-width = 1680
-height = 1050
+WIDTH = config.get_config()['resolution_x']
+HEIGHT = config.get_config()['resolution_y']
 
-util.ui_scale = 0.4
-window = pyglet.window.Window(width, height)
+# load the config and initialize
+config.initialize()
 
-util.set_resolution(width, height)
+# Start up the window
 
-
-# Set up the UI
+window = pyglet.window.Window(WIDTH, HEIGHT)
 
 panel_top = ui_element.UIElement(
     pyglet.resource.image('assets/panel_top.png'), x=512, y=720)
@@ -33,7 +33,7 @@ hint_right = ui_element.UIElement(
 
 records = []
 
-for i in range(10):
+for i in range(len(config.roms)):
     record_image = pyglet.resource.image('assets/record.png')
     newrecord = ui_scrollable_row.UiScrollableRow(
         i, True, record_image, x=512, y=360)

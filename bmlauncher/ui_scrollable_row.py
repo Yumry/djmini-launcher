@@ -1,4 +1,3 @@
-import pyglet
 import random
 from . import util
 from . import ui_element
@@ -32,4 +31,4 @@ class UiScrollableRow(ui_element.UIElement):
             self.shiftamount = 0
 
     def shift(self, amount):
-        self.shiftby = amount * util.scale_factor * util.ui_scale
+        self.shiftby = amount * util.SCALE_FACTOR
