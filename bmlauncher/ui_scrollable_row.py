@@ -1,8 +1,10 @@
 import pyglet
 import random
 from . import util
-from . import ui_object
-class UiShiftedRow(ui_object.UIObject):
+from . import ui_element
+
+
+class UiScrollableRow(ui_element.UIElement):
     def __init__(self, position, random_color, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pos = position
@@ -10,7 +12,8 @@ class UiShiftedRow(ui_object.UIObject):
         self.shiftamount = 0
         self.x = self.width * self.pos + util.scale_x(512)
         if random_color:
-            self.color = (random.randrange(150, 255),random.randrange(150, 255),random.randrange(150, 255))
+            self.color = (random.randrange(150, 255), random.randrange(
+                150, 255), random.randrange(150, 255))
 
     def update(self, dt):
         # First we check if we can shift this turn without misaligning.
