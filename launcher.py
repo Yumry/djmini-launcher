@@ -4,6 +4,7 @@ import bmlauncher.util as util
 import bmlauncher.ui_scrollable_row as ui_scrollable_row
 import bmlauncher.ui_element as ui_element
 import bmlauncher.config as config
+import subprocess
 
 WIDTH = config.get_config()['resolution_x']
 HEIGHT = config.get_config()['resolution_y']
@@ -39,6 +40,23 @@ for i in range(len(config.roms)):
         i, True, record_image, x=512, y=360)
     records.append(newrecord)
 
+label_title = pyglet.text.Label(config.roms[abs(records[0].pos - 0)],
+                                font_name='Times New Roman',
+                                font_size=40,
+                                x=util.scale_x(512), y = util.scale_y(550),
+                                anchor_x='center', anchor_y='center')
+
+def launch_game():
+    print(config.roms[abs(records[0].pos - 0)])
+    subprocess.run([config.get_config()['mame_directory'] + 
+                config.get_config()['mame_executable'],
+                config.roms[abs(records[0].pos - 0)]],
+                cwd=config.get_config()['mame_directory'])
+
+def update_title():
+    print(abs(records[0].pos - 0))
+    label_title.text = config.roms[abs(records[0].pos - 0)]
+
 @window.event
 def on_draw():
     window.clear()
@@ -49,18 +67,23 @@ def on_draw():
     panel_right.draw()
     hint_left.draw()
     hint_right.draw()
+    label_title.draw()
 
 
 @window.event
 def on_key_press(symbol, modifiers):
-    if(records[0].pos < 0):
+    if(records[0].pos  < 0):
         if(symbol == key.RIGHT):
             for record in records:
                 record.shift(30)
+                update_title()
     if(records[0].pos > 1 - len(records)):
         if(symbol == key.LEFT):
             for record in records:
                 record.shift(-30)
+                update_title()
+    if(symbol == key.ENTER):
+        launch_game()
 
 
 for record in records:

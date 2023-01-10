@@ -1,5 +1,5 @@
-# The path to your mame executable (including the executable)
-mame_directory: /home/yumry/mame/mame
+mame_directory: /home/yumry/mame/
+mame_executable: mame
 mame_args: -output network
 
 roms_directory: /home/yumry/mame/roms/
