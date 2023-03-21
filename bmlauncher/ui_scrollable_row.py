@@ -24,7 +24,7 @@ class UiScrollableRow(ui_element.UIElement):
         else:
             # we can't move anymore without misaligning, so snap to the grid and save
             # our place in the lineup.
-            self.x = snapto(self.x, 815)
+            self.x = snapto(self.x, self.width)
             self.shiftby = 0
             self.shiftamount = 0
             self.pos = int(snapto(self.x, self.width) / self.width) -1

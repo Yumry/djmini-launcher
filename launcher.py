@@ -94,7 +94,7 @@ def on_mouse_motion(x, y, dx, dy):
             record.shift(dx * MOUSE_SENSITIVITY)
     if(dx < 0 and records[0].pos > 1 - len(records)):
         for record in records:
-            record.shift(dx * MOUSE_SENSITIVITY)
+            record.shift(dx * MOUSE_SENSITIVITY * util.SCALE_FACTOR)
 
 for record in records:
     pyglet.clock.schedule_interval(record.update, 0.00005)
