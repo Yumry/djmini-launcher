@@ -2,6 +2,8 @@ import random
 from . import util
 from . import ui_element
 
+def snapto(x, base=10):
+    return int(base * round(x / base))
 
 class UiScrollableRow(ui_element.UIElement):
     def __init__(self, position, random_color, *args, **kwargs):
@@ -22,13 +24,10 @@ class UiScrollableRow(ui_element.UIElement):
         else:
             # we can't move anymore without misaligning, so snap to the grid and save
             # our place in the lineup.
-            self.x = self.pos * self.width + util.scale_x(512)
+            self.x = snapto(self.x, 815)
             self.shiftby = 0
             self.shiftamount = 0
+            self.pos = int(snapto(self.x, self.width) / self.width) -1
 
     def shift(self, amount):
         self.shiftby = amount * util.SCALE_FACTOR
-        if(amount < 0):
-            self.pos -= 1
-        else:
-            self.pos += 1

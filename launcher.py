@@ -9,12 +9,15 @@ import subprocess
 WIDTH = config.get_config()['resolution_x']
 HEIGHT = config.get_config()['resolution_y']
 
+MOUSE_SENSITIVITY = config.get_config()['mouse_sensitivity']
+
 # load the config and initialize
 config.initialize()
 
 # Start up the window
 
 window = pyglet.window.Window(WIDTH, HEIGHT)
+window.set_exclusive_mouse(True)
 
 panel_top = ui_element.UIElement(
     pyglet.resource.image('assets/panel_top.png'), x=512, y=720)
@@ -40,9 +43,9 @@ for i in range(len(config.roms)):
         i, True, record_image, x=512, y=360)
     records.append(newrecord)
 
-label_title = pyglet.text.Label(config.roms[abs(records[0].pos - 0)],
-                                font_name='Times New Roman',
-                                font_size=40,
+label_title = pyglet.text.Label('Unknown ROM',
+                                font_name='Arial',
+                                font_size=50 * util.SCALE_FACTOR,
                                 x=util.scale_x(512), y = util.scale_y(550),
                                 anchor_x='center', anchor_y='center')
 
@@ -54,8 +57,8 @@ def launch_game():
                 cwd=config.get_config()['mame_directory'])
 
 def update_title():
-    print(abs(records[0].pos - 0))
-    label_title.text = config.roms[abs(records[0].pos - 0)]
+    label_title.text = config.roms[abs(records[0].pos - 0)][
+                       len(config.get_config()['roms_directory']):]
 
 @window.event
 def on_draw():
@@ -68,25 +71,33 @@ def on_draw():
     hint_left.draw()
     hint_right.draw()
     label_title.draw()
+    update_title()
 
 
 @window.event
 def on_key_press(symbol, modifiers):
-    if(records[0].pos  < 0):
+    if(records[0].pos < 0):
         if(symbol == key.RIGHT):
             for record in records:
-                record.shift(30)
-                update_title()
+                record.shift(50)
     if(records[0].pos > 1 - len(records)):
         if(symbol == key.LEFT):
             for record in records:
-                record.shift(-30)
-                update_title()
+                record.shift(-50)
     if(symbol == key.ENTER):
         launch_game()
 
+@window.event
+def on_mouse_motion(x, y, dx, dy):
+    if(dx > 0 and records[0].pos < 0):    
+        for record in records:
+            record.shift(dx * MOUSE_SENSITIVITY)
+    if(dx < 0 and records[0].pos > 1 - len(records)):
+        for record in records:
+            record.shift(dx * MOUSE_SENSITIVITY)
 
 for record in records:
     pyglet.clock.schedule_interval(record.update, 0.00005)
 
+update_title()
 pyglet.app.run()

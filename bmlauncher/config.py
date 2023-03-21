@@ -8,7 +8,7 @@ def initialize():
     roms_dir = config['roms_directory']
 
     rom_files = glob.glob(roms_dir + '/*.zip')
-    for file in rom_files:
+    for file in sorted(rom_files):
         roms.append(file)
 
 def get_config():
