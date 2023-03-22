@@ -28,7 +28,6 @@ class Launcher(object):
         self.unload_scene()
         self.current_scene = scene(self)
         self.start_scene()
-    
 
 launcher = Launcher()
 launcher.execute()

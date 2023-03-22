@@ -18,7 +18,7 @@ class UiScrollableRow(ui_element.UIElement):
 
     def update(self, dt):
         # First we check if we can shift this turn without misaligning.
-        if(abs((self.shiftamount + self.shiftby) - 0) < self.width):
+        if abs((self.shiftamount + self.shiftby) - 0) < self.width:
             self.x += self.shiftby
             self.shiftamount += self.shiftby
         else:

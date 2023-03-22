@@ -38,7 +38,7 @@ class MainMenu(Scene):
 
         self.label_title = pyglet.text.Label('Unknown ROM',
                                 font_name='Arial',
-                                font_size=50 * util.SCALE_FACTOR,
+                                font_size=config.get_config()['font_size'] * util.SCALE_FACTOR,
                                 x=util.scale_x(512), y = util.scale_y(550),
                                 anchor_x='center', anchor_y='center')
 
@@ -64,6 +64,7 @@ class MainMenu(Scene):
     def update_title(self):
         self.label_title.text = config.roms[abs(self.records[0].pos - 0)][
                         len(config.get_config()['roms_directory']):]
+
     def on_draw(self):
         self.launcher.window.clear()
         for record in self.records:
@@ -77,21 +78,21 @@ class MainMenu(Scene):
         self.label_title.draw()
     
     def on_key_press(self, symbol, modifiers):
-        if(self.records[0].pos < 0):
-            if(symbol == key.RIGHT):
+        if self.records[0].pos < 0:
+            if symbol == config.bindings['right']:
                 for record in self.records:
                     record.shift(50)
-        if(self.records[0].pos > 1 - len(self.records)):
-            if(symbol == key.LEFT):
+        if self.records[0].pos > 1 - len(self.records):
+            if symbol == config.bindings['left']:
                 for record in self.records:
                     record.shift(-50)
-        if(symbol == key.ENTER):
+        if symbol == config.bindings['start']:
             self.launch_game()
-        if(symbol == key.SPACE):
+        if symbol == config.bindings['settings'] :
             self.launcher.load_scene(OptionsMenu)
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if((dx > 0 and self.records[0].pos < 0)
+        if ((dx > 0 and self.records[0].pos < 0)
         or (dx < 0 and self.records[0].pos > 1 - len(self.records))):    
             for record in self.records:
                 record.shift(dx * MOUSE_SENSITIVITY)
