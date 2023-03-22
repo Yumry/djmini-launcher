@@ -4,6 +4,7 @@ import pyglet.window.key as key
 import bmlauncher.util as util
 from enum import Enum
 import bmlauncher.config as config
+
 class Action(Enum):
     LABEL = 0
     CATEGORY = 1
@@ -57,5 +58,9 @@ class UITextList(object):
                 self.rect_selection.height = entry.label.content_height - 10
                 self.rect_selection.draw()
             if entry.action == Action.KEYBIND:
-                entry.label.text = entry.display_name + key.symbol_string(config.bindings[entry.input])
+                key_names = []
+                for name in config.bindings[entry.input]:
+                    key_names.append(key.symbol_string(name))
+                    
+                entry.label.text = entry.display_name + ','.join(key_names)
             entry.label.draw()

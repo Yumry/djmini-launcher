@@ -8,9 +8,21 @@ ui_scaling: 0.4
 font_size: 70
 mouse_sensitivity: 40
 key_bindings:
-  start: 65293
-  left: 65361
-  right: 65363
-  up: 65362
-  down: 65364
-  settings: 32
+  start:
+  - 65293
+  left:
+  - 65361
+  - 97
+  right:
+  - 65363
+  - 100
+  up:
+  - 65362
+  - 119
+  down:
+  - 65364
+  - 115
+  settings:
+  - 32
+  delete:
+  - 65535

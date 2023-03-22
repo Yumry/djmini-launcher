@@ -79,16 +79,16 @@ class MainMenu(Scene):
     
     def on_key_press(self, symbol, modifiers):
         if self.records[0].pos < 0:
-            if symbol == config.bindings['right']:
+            if symbol in config.bindings['right']:
                 for record in self.records:
                     record.shift(50)
         if self.records[0].pos > 1 - len(self.records):
-            if symbol == config.bindings['left']:
+            if symbol in config.bindings['left']:
                 for record in self.records:
                     record.shift(-50)
-        if symbol == config.bindings['start']:
+        if symbol in config.bindings['start']:
             self.launch_game()
-        if symbol == config.bindings['settings'] :
+        if symbol in config.bindings['settings'] :
             self.launcher.load_scene(OptionsMenu)
 
     def on_mouse_motion(self, x, y, dx, dy):

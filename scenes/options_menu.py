@@ -12,22 +12,27 @@ class OptionsMenu(Scene):
         self.in_popup = 0
 
         self.rect_bg = shapes.Rectangle(util.scale_x(100), util.scale_y(100), 
-                        util.scale_x(824), util.scale_y(550), (33, 5, 41))
+                       util.scale_x(824), util.scale_y(550), (33, 5, 41))
 
         self.label_title = pyglet.text.Label('Options Menu',
-                                font_name='Arial',
-                                font_size=config.get_config()['font_size'] * util.SCALE_FACTOR,
-                                x=util.scale_x(512), y=util.scale_y(700),
-                                anchor_x='center', anchor_y='center')
+                           font_name='Arial',
+                           font_size=config.get_config()['font_size'] * util.SCALE_FACTOR,
+                           x=util.scale_x(512), y=util.scale_y(700),
+                           anchor_x='center', anchor_y='center')
         
         
         self.option_list = UITextList(util.scale_x(110), util.scale_y(600), util.scale_x(804))
         self.option_list.append_entry('Back', Action.BACK)
 
-        self.option_keyboard = UITextList(util.scale_x(110), util.scale_y(600), util.scale_x(804), self.option_list)
+        self.option_keyboard = UITextList(util.scale_x(110), util.scale_y(600), 
+                               util.scale_x(804), self.option_list)
         self.option_keyboard.append_entry('Back', Action.BACK)
         for binding in config.get_config()['key_bindings']:
             self.option_keyboard.append_entry(binding + ' : ', Action.KEYBIND, binding)
+        
+        self.option_gamepad = UITextList(util.scale_x(110), util.scale_y(600), 
+                              util.scale_x(804), self.option_list)
+        
 
         self.option_list.append_entry('Keyboard Bindings', Action.CATEGORY, self.option_keyboard)
 
@@ -48,13 +53,13 @@ class OptionsMenu(Scene):
     
     def on_key_press(self, symbol, modifiers):
         if not self.in_popup:
-            if symbol == config.bindings['settings']:
+            if symbol in config.bindings['settings']:
                 self.launcher.load_scene()
-            if symbol == config.bindings['down']:
+            if symbol in config.bindings['down']:
                 self.active_menu.set_selection(self.active_menu.selected + 1)
-            if symbol == config.bindings['up']:
+            if symbol in config.bindings['up']:
                 self.active_menu.set_selection(self.active_menu.selected - 1)
-            if symbol == config.bindings['start']:
+            if symbol in config.bindings['start']:
                 match self.active_menu.get_selection().action:
                     case Action.BACK:
                         if self.active_menu.parent == None:
@@ -65,8 +70,12 @@ class OptionsMenu(Scene):
                     case Action.CATEGORY:
                         pass
                         self.active_menu = self.active_menu.get_selection().input
+            if symbol in config.bindings['delete']:
+                if self.active_menu.get_selection().action == Action.KEYBIND:
+                    config.bindings[self.active_menu.get_selection().input] = []
+                    config.save_config()
         # Keybinding popup is running. Let's set our keybind
         else:
-            config.bindings[self.active_menu.get_selection().input] = symbol
+            config.bindings[self.active_menu.get_selection().input].append(symbol)
             config.save_config()
             self.in_popup = False

@@ -14,6 +14,7 @@ def initialize():
     
     for bind_name, value in config['key_bindings'].items():
         bindings[bind_name]=value
+    print(bindings)
 
 def get_config():
     with open('config.yml', 'r') as file:
