@@ -15,19 +15,25 @@ class OptionsMenu(Scene):
                         util.scale_x(824), util.scale_y(550), (33, 5, 41))
 
         self.label_title = pyglet.text.Label('Options Menu',
-                                font_name = 'Arial',
-                                font_size = config.get_config()['font_size'] * util.SCALE_FACTOR,
-                                x = util.scale_x(512), y = util.scale_y(700),
-                                anchor_x = 'center', anchor_y = 'center')
+                                font_name='Arial',
+                                font_size=config.get_config()['font_size'] * util.SCALE_FACTOR,
+                                x=util.scale_x(512), y=util.scale_y(700),
+                                anchor_x='center', anchor_y='center')
+        
         
         self.option_list = UITextList(util.scale_x(110), util.scale_y(600), util.scale_x(804))
-
         self.option_list.append_entry('Back', Action.BACK)
-        self.option_list.append_entry('Keyboard Bindings', Action.CATEGORY)
+
+        self.option_keyboard = UITextList(util.scale_x(110), util.scale_y(600), util.scale_x(804), self.option_list)
+        self.option_keyboard.append_entry('Back', Action.BACK)
         for binding in config.get_config()['key_bindings']:
-            self.option_list.append_entry(binding + ' : ', Action.KEYBIND, binding)
-        
+            self.option_keyboard.append_entry(binding + ' : ', Action.KEYBIND, binding)
+
+        self.option_list.append_entry('Keyboard Bindings', Action.CATEGORY, self.option_keyboard)
+
+        self.active_menu = self.option_list
         self.binding_popup = UIPopUp('Waiting for input...')
+
 
         self.launcher.window.set_handler('on_draw', self.on_draw)
         self.launcher.window.set_handler('on_key_press', self.on_key_press)
@@ -36,7 +42,7 @@ class OptionsMenu(Scene):
         self.launcher.window.clear()
         self.rect_bg.draw()
         self.label_title.draw()
-        self.option_list.draw()
+        self.active_menu.draw()
         if self.in_popup:
             self.binding_popup.draw()
     
@@ -45,17 +51,22 @@ class OptionsMenu(Scene):
             if symbol == config.bindings['settings']:
                 self.launcher.load_scene()
             if symbol == config.bindings['down']:
-                self.option_list.set_selection(self.option_list.selected + 1)
+                self.active_menu.set_selection(self.active_menu.selected + 1)
             if symbol == config.bindings['up']:
-                self.option_list.set_selection(self.option_list.selected - 1)
+                self.active_menu.set_selection(self.active_menu.selected - 1)
             if symbol == config.bindings['start']:
-                match self.option_list.get_selection().action:
+                match self.active_menu.get_selection().action:
                     case Action.BACK:
-                        self.launcher.load_scene()
+                        if self.active_menu.parent == None:
+                            self.launcher.load_scene()
+                        else: self.active_menu = self.active_menu.parent
                     case Action.KEYBIND:
                         self.in_popup = True
+                    case Action.CATEGORY:
+                        pass
+                        self.active_menu = self.active_menu.get_selection().input
         # Keybinding popup is running. Let's set our keybind
         else:
-            config.bindings[self.option_list.get_selection().input] = symbol
+            config.bindings[self.active_menu.get_selection().input] = symbol
             config.save_config()
             self.in_popup = False

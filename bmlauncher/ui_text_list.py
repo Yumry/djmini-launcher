@@ -21,13 +21,14 @@ class UITextListEntry(object):
             self.display_name = label.text
 
 class UITextList(object):
-    def __init__(self, x, y, width):
+    def __init__(self, x, y, width, parent=None):
         self.entries = []
         key.EXCLAMATION
         self.x = x
         self.y = y
         self.selected = 0
         self.rect_selection = shapes.Rectangle(self.x, self.y, width, 0, (95, 62, 158))
+        self.parent = parent
 
     def append_entry(self, text, action=Action.LABEL, input=None):
         size = config.get_config()['font_size'] * util.SCALE_FACTOR
