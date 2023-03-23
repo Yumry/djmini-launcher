@@ -60,7 +60,10 @@ class UITextList(object):
             if entry.action == Action.KEYBIND:
                 key_names = []
                 for name in config.bindings[entry.input]:
-                    key_names.append(key.symbol_string(name))
+                    if isinstance(name, int):
+                        key_names.append(key.symbol_string(name))
+                    else:
+                        key_names.append(name)
                     
                 entry.label.text = entry.display_name + ','.join(key_names)
             entry.label.draw()

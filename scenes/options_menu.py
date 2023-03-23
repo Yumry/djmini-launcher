@@ -23,17 +23,13 @@ class OptionsMenu(Scene):
         self.option_list = UITextList(util.scale_x(110), util.scale_y(600), util.scale_x(804))
         self.option_list.append_entry('Back', Action.BACK)
 
-        self.option_keyboard = UITextList(util.scale_x(110), util.scale_y(600), 
+        self.option_bindings = UITextList(util.scale_x(110), util.scale_y(600), 
                                util.scale_x(804), self.option_list)
-        self.option_keyboard.append_entry('Back', Action.BACK)
+        self.option_bindings.append_entry('Back', Action.BACK)
         for binding in config.get_config()['key_bindings']:
-            self.option_keyboard.append_entry(binding + ' : ', Action.KEYBIND, binding)
+            self.option_bindings.append_entry(binding + ' : ', Action.KEYBIND, binding)
 
-        self.option_gamepad = UITextList(util.scale_x(110), util.scale_y(600), 
-                              util.scale_x(804), self.option_list)
-
-
-        self.option_list.append_entry('Keyboard Bindings', Action.CATEGORY, self.option_keyboard)
+        self.option_list.append_entry('Button Bindings', Action.CATEGORY, self.option_bindings)
 
         self.active_menu = self.option_list
         self.binding_popup = UIPopUp('Waiting for input...')
@@ -41,6 +37,9 @@ class OptionsMenu(Scene):
 
         self.launcher.window.set_handler('on_draw', self.on_draw)
         self.launcher.window.set_handler('on_key_press', self.on_key_press)
+        if(self.launcher.controller is not None):
+            self.launcher.controller.set_handler('on_button_press', self.on_button_press)
+            self.launcher.controller.set_handler('on_dpad_motion', self.on_dpad_motion)
 
     def on_draw(self):
         self.launcher.window.clear()
@@ -72,9 +71,10 @@ class OptionsMenu(Scene):
         config.save_config()
         self.in_popup = False
 
-    def on_key_press(self, symbol, modifiers):
+    def on_input(self, symbol):
         if not self.in_popup:
             if symbol in config.bindings['settings']:
+                self.launcher.unload_scene()
                 self.launcher.load_scene()
             if symbol in config.bindings['down']:
                 self.active_menu.set_selection(self.active_menu.selected + 1)
@@ -88,5 +88,19 @@ class OptionsMenu(Scene):
         else:
             self.save_input(symbol)
 
-    def on_button_press(controller, button_name):
-        print(button_name)
+    def on_key_press(self, symbol, modifiers):
+        self.on_input(symbol)
+    
+    def on_button_press(self, controller, pressed_button):
+        button = 'btn_' + pressed_button
+        self.on_input(button)
+
+    def on_dpad_motion(self, controller, left, right, up, down):
+        if left:
+            self.on_input('dpad_l')
+        if right:
+            self.on_input('dpad_r')
+        if up:
+            self.on_input('dpad_u')
+        if down:
+            self.on_input('dpad_d')

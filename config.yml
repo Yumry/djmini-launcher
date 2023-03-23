@@ -11,19 +11,28 @@ mouse_sensitivity: 2
 key_bindings:
   start:
   - 65293
+  - btn_start
   left:
   - 65361
   - 97
+  - dpad_l
   right:
   - 65363
   - 100
+  - dpad_r
   up:
   - 65362
   - 119
+  - dpad_u
   down:
   - 65364
   - 115
+  - dpad_d
   settings:
   - 32
+  - btn_y
   delete:
   - 65535
+  close_mame:
+  - btn_leftshoulder
+  - btn_rightshoulder

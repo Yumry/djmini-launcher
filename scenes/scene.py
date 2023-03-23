@@ -7,3 +7,5 @@ class Scene(object):
 
     def unload_scene(self):
         self.launcher.window.remove_handlers()
+        if self.launcher.controller is not None:
+            self.launcher.controller.remove_handlers()

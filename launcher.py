@@ -9,8 +9,13 @@ HEIGHT = config.get_config()['resolution_y']
 
 class Launcher(object):
     def __init__(self):
-        pass
-        #self.current_scene = MainMenu(self)
+        self.current_scene = MainMenu(self)
+        self.controller = None
+        self.controllers = pyglet.input.get_controllers()
+        if self.controllers:
+            print('Connecting to controller', self.controllers[0].name)
+            self.controller = self.controllers[0]
+            self.controllers[0].open()
 
     def start_scene(self):
         self.current_scene.start_scene()
