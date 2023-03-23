@@ -2,7 +2,7 @@ import pyglet
 from pyglet.window import key
 import bmlauncher.util as util
 import bmlauncher.ui_scrollable_row as ui_scrollable_row
-import bmlauncher.ui_element as ui_element
+from bmlauncher.ui_element import UIElement
 import bmlauncher.config as config
 from scenes.scene import Scene
 from scenes.options_menu import OptionsMenu
@@ -12,28 +12,27 @@ MOUSE_SENSITIVITY = config.get_config()['mouse_sensitivity']
 
 class MainMenu(Scene):
     def start_scene(self):
-        self.panel_top = ui_element.UIElement(
-            pyglet.resource.image('assets/panel_top.png'), x=512, y=720)
+        self.panel_top = UIElement(util.get_centered_image('assets/panel_top.png'),
+                            x=512, y=720)
         
-        self.panel_left = ui_element.UIElement(
-            pyglet.resource.image('assets/panel_corner.png'), x = 100, y = 50)
+        self.panel_left = UIElement(util.get_centered_image('assets/panel_corner.png'), 
+                            x=100, y=50)
 
-        self.panel_right = ui_element.UIElement(
-            pyglet.resource.image('assets/panel_corner.png'), x = 924, y = 50)
+        self.panel_right = UIElement(util.get_centered_image('assets/panel_corner.png'), 
+                            x=924, y=50)
         self.panel_right.image = self.panel_right.image.get_transform(flip_x = True)
 
-        self.hint_left = ui_element.UIElement(
-            pyglet.resource.image('assets/hint_changegame.png'), x = 80, y = 50)
-            
-        self.hint_right = ui_element.UIElement(
-            pyglet.resource.image('assets/hint_startgame.png'), x = 944, y = 50)
+        self.hint_left = UIElement(util.get_centered_image('assets/hint_changegame.png'), 
+                            x=80, y=50)
+
+        self.hint_right = UIElement(util.get_centered_image('assets/hint_startgame.png'), 
+                            x=944, y=50)
 
         self.records = []
 
         for i in range(len(config.roms)):
-            record_image = pyglet.resource.image('assets/record.png')
             newrecord = ui_scrollable_row.UiScrollableRow(
-                i, True, record_image, x=512, y=360)
+                i, True, util.get_centered_image('assets/record.png'), x=512, y=360)
             self.records.append(newrecord)
 
         self.label_title = pyglet.text.Label('Unknown ROM',
@@ -43,7 +42,7 @@ class MainMenu(Scene):
                                 anchor_x='center', anchor_y='center')
 
         for record in self.records:
-            pyglet.clock.schedule_interval(record.update, 0.00005)
+            pyglet.clock.schedule_interval(record.update, 0.0001)
         
         self.launcher.window.set_handler('on_draw', self.on_draw)
         self.launcher.window.set_handler('on_key_press', self.on_key_press)
@@ -76,16 +75,16 @@ class MainMenu(Scene):
         self.hint_right.draw()
         self.update_title()
         self.label_title.draw()
-    
+
     def on_key_press(self, symbol, modifiers):
         if self.records[0].pos < 0:
             if symbol in config.bindings['right']:
                 for record in self.records:
-                    record.shift(50)
+                    record.shift(2)
         if self.records[0].pos > 1 - len(self.records):
             if symbol in config.bindings['left']:
                 for record in self.records:
-                    record.shift(-50)
+                    record.shift(-2) 
         if symbol in config.bindings['start']:
             self.launch_game()
         if symbol in config.bindings['settings'] :

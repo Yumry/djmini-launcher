@@ -1,4 +1,5 @@
 from . import config
+import pyglet
 # our scaling factor for image sizes, animation speed, etc
 
 # How much scaling we apply to each UI element independent of
@@ -11,10 +12,15 @@ SCREEN_HEIGHT = config.get_config()['resolution_y']
 SCALE_FACTOR = (SCREEN_WIDTH / 1024) * config.get_config()['ui_scaling']
 
 def center_image(image):
-    # Set image anchor point to its center
+    # Set image anchor point to its center.
     image.anchor_x = image.width / 2
     image.anchor_y = image.height / 2
 
+def get_centered_image(image_path):
+    img = pyglet.image.load(image_path)
+    img.anchor_x = img.width // 2
+    img.anchor_y = img.height // 2
+    return img
 
 # To allow us to position things the same on every resolution,
 # we use a sort of "virtual" pixel resolution of 1024x768.

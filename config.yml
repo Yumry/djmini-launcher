@@ -4,9 +4,10 @@ mame_args: -output network
 roms_directory: /home/yumry/mame/roms/
 resolution_x: 1680
 resolution_y: 1050
+fps_limit: 244
 ui_scaling: 0.4
 font_size: 70
-mouse_sensitivity: 40
+mouse_sensitivity: 2
 key_bindings:
   start:
   - 65293
