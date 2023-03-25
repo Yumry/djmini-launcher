@@ -9,3 +9,6 @@ class Scene(object):
         self.launcher.window.remove_handlers()
         if self.launcher.controller is not None:
             self.launcher.controller.remove_handlers()
+
+        if self.launcher.native_controller is not None:
+            self.launcher.native_controller.remove_handlers()

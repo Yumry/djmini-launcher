@@ -37,9 +37,13 @@ class OptionsMenu(Scene):
 
         self.launcher.window.set_handler('on_draw', self.on_draw)
         self.launcher.window.set_handler('on_key_press', self.on_key_press)
-        if(self.launcher.controller is not None):
+
+        if self.launcher.controller is not None:
             self.launcher.controller.set_handler('on_button_press', self.on_button_press)
             self.launcher.controller.set_handler('on_dpad_motion', self.on_dpad_motion)
+
+        if self.launcher.native_controller is not None:
+            self.launcher.native_controller.add_press_handler(self.on_native_button_press)
 
     def on_draw(self):
         self.launcher.window.clear()
@@ -104,3 +108,6 @@ class OptionsMenu(Scene):
             self.on_input('dpad_u')
         if down:
             self.on_input('dpad_d')
+
+    def on_native_button_press(self, button):
+        self.on_input(button)
