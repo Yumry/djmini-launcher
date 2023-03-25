@@ -2,8 +2,9 @@ mame_directory: /home/yumry/mame
 mame_executable: mame
 mame_args: -output network
 roms_directory: /home/yumry/mame/roms
-resolution_x: 1680
-resolution_y: 1050
+resolution_x: 1920
+resolution_y: 1080
+fullscreen: true
 enable_vsync: false
 fps_limit: 120
 ui_scaling: 0.4
@@ -15,6 +16,7 @@ key_bindings:
   start:
   - 65293
   - btn_start
+  - btn_b
   left:
   - 65361
   - 97

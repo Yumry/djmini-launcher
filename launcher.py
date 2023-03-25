@@ -17,7 +17,7 @@ class Launcher(object):
             print('Connecting to controller', self.controllers[0].name)
             self.controller = self.controllers[0]
             self.controllers[0].open()
-        
+
         self.native_controller = None
         if config.get_config()['native_linux_joysticks']:
             self.native_controller = Controller(config.get_config()['native_joystick_device'])
@@ -31,6 +31,7 @@ class Launcher(object):
         self.window = pyglet.window.Window(WIDTH, HEIGHT)
         self.window.set_vsync(config.get_config()['enable_vsync'])
         self.window.set_exclusive_mouse(True)
+        self.window.set_fullscreen(config.get_config()['fullscreen'])
 
         self.load_scene()
         pyglet.app.run(interval=1/config.get_config()['fps_limit'])
@@ -47,8 +48,6 @@ class Launcher(object):
         # once the program is exiting close the controller thread
         if self.native_controller is not None:
             self.native_controller.stop()
-
-
 
 launcher = Launcher()
 launcher.execute()

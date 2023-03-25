@@ -14,7 +14,7 @@ class MainMenu(Scene):
     def start_scene(self):
         self.panel_top = UIElement(util.get_centered_image('assets/panel_top.png'),
                             x=512, y=720)
-        
+
         self.panel_left = UIElement(util.get_centered_image('assets/panel_corner.png'), 
                             x=100, y=50)
 
@@ -30,9 +30,10 @@ class MainMenu(Scene):
 
         self.records = []
 
+        record_image = util.get_centered_image('assets/record.png')
         for i in range(len(config.roms)):
             newrecord = ui_scrollable_row.UiScrollableRow(
-                i, True, util.get_centered_image('assets/record.png'), x=512, y=360)
+                i, True, record_image, x=512, y=360)
             self.records.append(newrecord)
 
         self.label_title = pyglet.text.Label('Unknown ROM',
@@ -43,7 +44,7 @@ class MainMenu(Scene):
 
         for record in self.records:
             pyglet.clock.schedule_interval(record.update, 0.0001)
-        
+
         self.launcher.window.set_handler('on_draw', self.on_draw)
         self.launcher.window.set_handler('on_key_press', self.on_key_press)
         self.launcher.window.set_handler('on_mouse_motion', self.on_mouse_motion)
@@ -150,7 +151,7 @@ class MainMenu(Scene):
         button = 'btn_' + released_button
         if button in self.active_buttons:
             self.active_buttons.remove(button)
-    
+
     def on_dpad_motion(self, controller, left, right, up, down):
         if left:
             self.on_input('dpad_l')
@@ -169,11 +170,11 @@ class MainMenu(Scene):
                     record.shift(dx * MOUSE_SENSITIVITY)
         except:
             pass
-        
+
     def on_native_button_press(self, pressed_button):
         self.active_buttons.append(pressed_button)
         self.on_input(pressed_button)
-    
+
     def on_native_button_release(self, released_button):
         if released_button in self.active_buttons:
             self.active_buttons.remove(released_button)
