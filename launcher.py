@@ -3,6 +3,7 @@ import bmlauncher.config as config
 from scenes.main_menu import MainMenu
 from scenes.options_menu import OptionsMenu
 from bmlauncher.native_controller import Controller
+from bmlauncher.lights_forwarder import LightsForwarder
 
 config.initialize()
 WIDTH = config.get_config()['resolution_x']
@@ -24,6 +25,11 @@ class Launcher(object):
             self.native_controller.daemon = True
             self.native_controller.start()
 
+        self.lights_forwarder = LightsForwarder()
+        self.lights_forwarder.daemon = True
+        if config.get_config()['enable_djmini_io']:
+            self.lights_forwarder.start()
+
     def start_scene(self):
         self.current_scene.start_scene()
 
@@ -44,11 +50,5 @@ class Launcher(object):
         self.current_scene = scene(self)
         self.start_scene()
 
-    def shutdown(self):
-        # once the program is exiting close the controller thread
-        if self.native_controller is not None:
-            self.native_controller.stop()
-
 launcher = Launcher()
 launcher.execute()
-launcher.shutdown()

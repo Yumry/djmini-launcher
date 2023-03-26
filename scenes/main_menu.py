@@ -40,7 +40,7 @@ class MainMenu(Scene):
                 i, True, record_image, x=512, y=360)
             self.records.append(newrecord)
 
-        self.label_title = pyglet.text.Label('Unknown ROM',
+        self.label_title = pyglet.text.Label('No ROMs found!',
                                 font_name='Arial',
                                 font_size=config.get_config()['font_size'] * util.SCALE_FACTOR,
                                 x=util.scale_x(512), y = util.scale_y(550),
@@ -100,19 +100,27 @@ class MainMenu(Scene):
 
     def launch_mame(self):
         def run_mame_process():
-            rom = config.roms[abs(self.records[0].pos - 0)]
-            print(rom)
+            rom = ''
             command = [config.get_config()['mame_directory'] + '/' +
-                      config.get_config()['mame_executable'], rom]
-            command += config.get_config()['mame_args'].split()
+                       config.get_config()['mame_executable']]
+            try:
+                rom = config.roms[abs(self.records[0].pos - 0)]
+                print(rom)
+                command.append(rom)
+                command += config.get_config()['mame_args'].split()
+            except:
+                print('No ROM found')
+            
             try:
                 self.mame_subprocess = subprocess.Popen(command,
                         cwd=config.get_config()['mame_directory'])
                 self.mame_subprocess.wait()
                 self.input_enabled = True
+                self.launcher.lights_forwarder.connected = False
             except:
                 self.input_enabled = True
                 print('Unable to start mame!')
+                self.launcher.lights_forwarder.connected = False
 
         self.input_enabled = False
         thread = threading.Thread(target=run_mame_process)

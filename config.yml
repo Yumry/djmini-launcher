@@ -12,6 +12,8 @@ font_size: 70
 mouse_sensitivity: 2
 native_linux_joysticks: false
 native_joystick_device: /dev/input/js1
+enable_djmini_io: false
+djmini_serial_port: /dev/ttyACM0
 key_bindings:
   start:
   - 65293
