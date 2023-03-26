@@ -3,6 +3,7 @@ from pyglet.window import key
 import bmlauncher.util as util
 import bmlauncher.ui_scrollable_row as ui_scrollable_row
 from bmlauncher.ui_element import UIElement
+from bmlauncher.ui_popup import UIPopUp
 import bmlauncher.config as config
 from scenes.scene import Scene
 from scenes.options_menu import OptionsMenu
@@ -28,6 +29,8 @@ class MainMenu(Scene):
 
         self.hint_right = UIElement(util.get_centered_image('assets/hint_startgame.png'), 
                             x=944, y=50)
+
+        self.loading_popup = UIPopUp('Loading...')
 
         self.records = []
 
@@ -74,23 +77,6 @@ class MainMenu(Scene):
         for record in self.records:
             pyglet.clock.unschedule(record.update)
 
-    def launch_game(self):
-        def run_mame_process():
-            print(config.roms[abs(self.records[0].pos - 0)])
-            try:
-                self.mame_subprocess = subprocess.Popen([config.get_config()['mame_directory'] + '/' +
-                        config.get_config()['mame_executable'],
-                        config.roms[abs(self.records[0].pos - 0)]],
-                        cwd=config.get_config()['mame_directory'])
-                self.input_enabled = False
-                self.mame_subprocess.wait()
-                self.input_enabled = True
-            except:
-                print('Unable to start mame!')
-
-        thread = threading.Thread(target=run_mame_process)
-        thread.start()
-
     def update_title(self):
         try:
             self.label_title.text = config.roms[abs(self.records[0].pos - 0)][
@@ -109,12 +95,35 @@ class MainMenu(Scene):
         self.hint_right.draw()
         self.update_title()
         self.label_title.draw()
+        if not self.input_enabled:
+            self.loading_popup.draw()
+
+    def launch_mame(self):
+        def run_mame_process():
+            rom = config.roms[abs(self.records[0].pos - 0)]
+            print(rom)
+            command = [config.get_config()['mame_directory'] + '/' +
+                      config.get_config()['mame_executable'], rom]
+            command += config.get_config()['mame_args'].split()
+            try:
+                self.mame_subprocess = subprocess.Popen(command,
+                        cwd=config.get_config()['mame_directory'])
+                self.mame_subprocess.wait()
+                self.input_enabled = True
+            except:
+                self.input_enabled = True
+                print('Unable to start mame!')
+
+        self.input_enabled = False
+        thread = threading.Thread(target=run_mame_process)
+        thread.start()
 
     def close_mame(self):
-        """This binding functions differently than the others.
+        """The binding for this functions differently than the others.
             Rather than acting as an OR gate it acts as an
             AND gate, requiring ALL buttons under the binding
-            to be pressed in order to close mame."""
+            to be pressed in order to close mame, where this function
+            is then called."""
         close_bindings = config.bindings['close_mame']
         number_pressed = 0
         if close_bindings is not None:
@@ -144,7 +153,7 @@ class MainMenu(Scene):
             except:
                 pass
             if symbol in config.bindings['start']:
-                self.launch_game()
+                self.launch_mame()
             if symbol in config.bindings['settings']:
                 self.launcher.unload_scene()
                 self.launcher.load_scene(OptionsMenu)
