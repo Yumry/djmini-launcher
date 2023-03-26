@@ -7,6 +7,7 @@ import bmlauncher.config as config
 from scenes.scene import Scene
 from scenes.options_menu import OptionsMenu
 import subprocess
+import threading
 
 MOUSE_SENSITIVITY = config.get_config()['mouse_sensitivity']
 
@@ -59,6 +60,7 @@ class MainMenu(Scene):
         
         self.active_buttons = []
         self.mame_subprocess = None
+        self.input_enabled = True
 
     def unload_scene(self):
         self.launcher.window.remove_handlers()
@@ -73,14 +75,21 @@ class MainMenu(Scene):
             pyglet.clock.unschedule(record.update)
 
     def launch_game(self):
-        print(config.roms[abs(self.records[0].pos - 0)])
-        try:
-            self.mame_subprocess = subprocess.Popen([config.get_config()['mame_directory'] + '/' +
-                    config.get_config()['mame_executable'],
-                    config.roms[abs(self.records[0].pos - 0)]],
-                    cwd=config.get_config()['mame_directory'])
-        except:
-            print('Unable to start mame!')
+        def run_mame_process():
+            print(config.roms[abs(self.records[0].pos - 0)])
+            try:
+                self.mame_subprocess = subprocess.Popen([config.get_config()['mame_directory'] + '/' +
+                        config.get_config()['mame_executable'],
+                        config.roms[abs(self.records[0].pos - 0)]],
+                        cwd=config.get_config()['mame_directory'])
+                self.input_enabled = False
+                self.mame_subprocess.wait()
+                self.input_enabled = True
+            except:
+                print('Unable to start mame!')
+
+        thread = threading.Thread(target=run_mame_process)
+        thread.start()
 
     def update_title(self):
         try:
@@ -118,24 +127,27 @@ class MainMenu(Scene):
                 if self.mame_subprocess is not None:
                     print('Closing mame!')
                     self.mame_subprocess.kill()
+                    self.mame_subprocess = None
+                    self.input_enabled = True
 
     def on_input(self, symbol):
-        try:
-            if self.records[0].pos < 0:
-                if symbol in config.bindings['right']:
-                    for record in self.records:
-                        record.shift(2)
-            if self.records[0].pos > 1 - len(self.records):
-                if symbol in config.bindings['left']:
-                    for record in self.records:
-                        record.shift(-2)
-        except:
-            pass
-        if symbol in config.bindings['start']:
-            self.launch_game()
-        if symbol in config.bindings['settings']:
-            self.launcher.unload_scene()
-            self.launcher.load_scene(OptionsMenu)
+        if self.input_enabled:
+            try:
+                if self.records[0].pos < 0:
+                    if symbol in config.bindings['right']:
+                        for record in self.records:
+                            record.shift(2)
+                if self.records[0].pos > 1 - len(self.records):
+                    if symbol in config.bindings['left']:
+                        for record in self.records:
+                            record.shift(-2)
+            except:
+                pass
+            if symbol in config.bindings['start']:
+                self.launch_game()
+            if symbol in config.bindings['settings']:
+                self.launcher.unload_scene()
+                self.launcher.load_scene(OptionsMenu)
         if symbol in config.bindings['close_mame']:
             self.close_mame()
 
@@ -163,13 +175,14 @@ class MainMenu(Scene):
             self.on_input('dpad_d')
 
     def on_mouse_motion(self, x, y, dx, dy):
-        try:
-            if ((dx > 0 and self.records[0].pos < 0)
-            or (dx < 0 and self.records[0].pos > 1 - len(self.records))):    
-                for record in self.records:
-                    record.shift(dx * MOUSE_SENSITIVITY)
-        except:
-            pass
+        if self.input_enabled:
+            try:
+                if ((dx > 0 and self.records[0].pos < 0)
+                or (dx < 0 and self.records[0].pos > 1 - len(self.records))):    
+                    for record in self.records:
+                        record.shift(dx * MOUSE_SENSITIVITY)
+            except:
+                pass
 
     def on_native_button_press(self, pressed_button):
         self.active_buttons.append(pressed_button)

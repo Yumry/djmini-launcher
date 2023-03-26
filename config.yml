@@ -16,12 +16,10 @@ key_bindings:
   start:
   - 65293
   - btn_start
-  - btn_b
   left:
   - 65361
   - 97
   - dpad_l
-  - 65515
   right:
   - 65363
   - 100
