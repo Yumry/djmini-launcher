@@ -41,3 +41,19 @@ key_bindings:
   delete:
   - 65535
   close_mame: []
+rom_name_overrides:
+  bm1stmix: Beatmania 1stMix
+  bm2ndmix: Beatmania 2ndMix
+  bm3rdmix: Beatmania 3rdMix
+  bm4thmix: Beatmania 4thMix
+  bm5thmix: Beatmania 5thMix
+  bm6thmix: Beatmania 6thMix
+  bm7thmix: Beatmania 7thMix
+  bmclubmx: Beatmania Club Mix
+  bmcompm2: Beatmania complete Mix 2
+  bmcompmx: Beatmania complete Mix
+  bmcompmxb: Beatmania complete Mix
+  bmcmxaac: Beatmania complete Mix
+  bmcorerm: Beatmania Core Remix
+  bmdct: Beatmania featuring Dreams Come True
+  bmfinal: Beatmania The Final

@@ -65,6 +65,13 @@ class MainMenu(Scene):
         self.mame_subprocess = None
         self.input_enabled = True
 
+        self.rom_list = []
+        for rom_name in config.roms:
+            rom_name = rom_name[len(config.get_config()['roms_directory']) + 1:-4]
+            if rom_name in config.get_config()['rom_name_overrides']:
+                rom_name = config.get_config()['rom_name_overrides'][rom_name]
+            self.rom_list.append(rom_name)
+
     def unload_scene(self):
         self.launcher.window.remove_handlers()
         if self.launcher.controller is not None:
@@ -79,8 +86,8 @@ class MainMenu(Scene):
 
     def update_title(self):
         try:
-            self.label_title.text = config.roms[abs(self.records[0].pos - 0)][
-                            len(config.get_config()['roms_directory']) + 1:]
+            rom_name = self.rom_list[abs(self.records[0].pos - 0)]
+            self.label_title.text = rom_name
         except:
             pass
 
